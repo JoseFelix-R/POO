@@ -30,13 +30,28 @@ class BuscaController:
         self._view.botoes['A_Arquivo']['command'] = self._add_arquivo
         
     def _busca_video(self):
-        pass
+        tit, canal,  datai, dataf, categor = self._view._add_dados()
+        
+        if tit != '':
+            bt = self._model.busca_por_titulo(tit)
+            self._view._atualiza_tv(bt)
+        elif tit == '':
+            try:
+                bt = self._model.busca_por_titulo(tit)
+                self._view._atualiza_tv(bt)
+            except ExcTituloInvalido as err:
+                mb.showerror('Busca', str(err))
+            else:
+                bt = self._model.busca_por_titulo(tit)
+                self._view._atualiza_tv(bt)
+                mb.showinfo('Busca', 'Busca realizada com sucesso')
+
     
     def _limpar_selec(self):
-        self._view._inicializar_vars.self._titulo.set('')
-        self._view._inicializar_vars.self._canal.set('')
-        self._view._inicializar_vars.self._data_i.set('')
-        self._view._inicializar_vars.self._cata_f.set('')
+        self._view.self._inicializar_vars.self._titulo.set('')
+        self._view.self._inicializar_vars.self._canal.set('')
+        self._view.self._inicializar_vars.self._data_i.set('')
+        self._view.self._inicializar_vars.self._cata_f.set('')
         
         
     def seleciona_arquivo(self):
@@ -48,7 +63,6 @@ class BuscaController:
 
         self.nome_arq  = askopenfilename(title='Abrir arquivo',\
                                    filetypes=self.tipos_arq)
-        print(self.nome_arq)
         if self.nome_arq:
             return self.nome_arq
         
@@ -57,6 +71,7 @@ class BuscaController:
         r = self.seleciona_arquivo()
         self._model.conversor = self._model.df
         p =  self._model.conversor
+        self._view._r = len(self._model.df)
         self._view._atualiza_tv(p)
 
 if __name__ == '__main__':
