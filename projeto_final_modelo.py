@@ -1,5 +1,5 @@
 """
-    ! Classe usada para o modelo do projeto final
+     Classe usada para o modelo do projeto final
 """
 
 import pandas as pd
