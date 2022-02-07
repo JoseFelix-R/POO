@@ -139,9 +139,7 @@ class BuscaGUI:
         
     def _atualiza_tv(self, lista):
         '''Modifica os valores da TreeVeiw'''
-     
-        for i,vi in enumerate(lista):
-            self._ltv.append(vi)
+        self._ltv = lista
 
         for i in self._ltv:
                 self._tv.insert('', tk.END, values=i)
