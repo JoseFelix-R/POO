@@ -1,5 +1,5 @@
 """
-     Classe usada para o modelo do projeto final
+    ! Classe usada para o modelo do projeto final
 """
 
 import pandas as pd
@@ -186,7 +186,7 @@ class BaseDeDados:
 if __name__ == '__main__':
     ld = BaseDeDados('BR_youtube_trending_data_p1.csv')
     
-    #print(ld.lista_categorias())
+    print(ld.lista_categorias())
     #res = ld.busca_por_titulo('Palmeiras')
     #res = ld.busca_por_canal('Diana Demarchi')
     res = ld.busca_por_categoria('comedy') # também pode ser informado um nr. inteiro
