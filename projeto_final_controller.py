@@ -32,19 +32,18 @@ class BuscaController:
     def _busca_video(self):
         tit, canal,  datai, dataf, categor = self._view._add_dados()
         
-        if tit != '':
+        try:        
+            if tit != '':
+                bt = self._model.busca_por_titulo(tit)
+                self._view._atualiza_tv(bt)
+            elif tit == '':
+                mb.showerror('Busca', str(err))
+        except ExcTituloInvalido as err:
+            mb.showerror('Busca', str(err))
+        else:
             bt = self._model.busca_por_titulo(tit)
             self._view._atualiza_tv(bt)
-        elif tit == '':
-            try:
-                bt = self._model.busca_por_titulo(tit)
-                self._view._atualiza_tv(bt)
-            except ExcTituloInvalido as err:
-                mb.showerror('Busca', str(err))
-            else:
-                bt = self._model.busca_por_titulo(tit)
-                self._view._atualiza_tv(bt)
-                mb.showinfo('Busca', 'Busca realizada com sucesso')
+            mb.showinfo('Busca', 'Busca realizada com sucesso')
 
     
     def _limpar_selec(self):
@@ -71,7 +70,7 @@ class BuscaController:
         r = self.seleciona_arquivo()
         self._model.conversor = self._model.df
         p =  self._model.conversor
-        self._view._r = len(self._model.df)
+        self._view._r = str(len(self._model.df))
         self._view._atualiza_tv(p)
 
 if __name__ == '__main__':
