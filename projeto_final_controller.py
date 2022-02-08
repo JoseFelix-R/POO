@@ -106,13 +106,31 @@ class BuscaController:
         if self.nome_arq:
             return self.nome_arq
         
-    
     def _add_arquivo(self):
         r = self.seleciona_arquivo()
-        self._model.conversor = self._model.df 
-        p =  self._model.conversor
+        #self._model.conversor(self._model.df) 
+        p =  self._model.conversor(self._model.df)
+       
+        #for i, valor in enumerate(p):
+        #    l.append(self.converter_video(valor[i]))
+        
+
         self._view._r = str(len(self._model.df))
         self._view._atualiza_tv(p)
+    
+
+    def converter_video(self, video):
+        self.info = video
+        self.canal = str(self.info[0])
+        self.titulo = str(self.info[1])
+        self.categoria = str(self.info[2])
+        self.views = str(self.info[3])
+        self.coments = str(self.info[4])
+        self.likes = str(self.infor[5])
+        self.datap = str(self.info(6))
+         
+        self.t = [self.canal,self.titulo,self.categoria,self.views,self.coments,self.likes,self.datap]
+        return self.t
 
     
 
