@@ -1,5 +1,6 @@
 from projeto_final_modelo import Video, BaseDeDados
 from projeto_final_view import BuscaGUI
+import pandas as pd
 import tkinter as tk
 import tkinter.ttk as ttk
 import tkinter.messagebox as mb
@@ -30,27 +31,67 @@ class BuscaController:
         self._view.botoes['A_Arquivo']['command'] = self._add_arquivo
         
     def _busca_video(self):
-        tit, canal,  datai, dataf, categor = self._view._add_dados()
-        
-        try:        
-            if tit != '':
+        tit, canal,  datai, dataf, categor , rb = self._view._add_dados()
+        if rb == '1':
+            try: 
+                if tit != '':       
+                    bt = self._model.busca_por_titulo(tit)
+                    self._view._atualiza_tv(bt)
+            except ExcTituloInvalido as err:
+                mb.showerror('Busca', str(err))
+            else:
                 bt = self._model.busca_por_titulo(tit)
                 self._view._atualiza_tv(bt)
-            elif tit == '':
+                mb.showinfo('Busca', 'Busca por titulo realizada com sucesso')
+        elif rb == '2':
+            try:        
+                if canal != '':
+                    bt = self._model.busca_por_canal(canal)
+                    self._view._atualiza_tv(bt)
+                elif tit == '':
+                    mb.showerror('Busca', str(err))
+            except ExcTituloInvalido as err:
                 mb.showerror('Busca', str(err))
-        except ExcTituloInvalido as err:
-            mb.showerror('Busca', str(err))
+            else:
+                bt = self._model.busca_por_canal(canal)
+                self._view._atualiza_tv(bt)
+                mb.showinfo('Busca', 'Busca por canal realizada com sucesso')
+        elif rb == '3':
+            try:        
+                if datai != '' and dataf != '': 
+                    bt = self._model.busca_por_periodo(datai, dataf)
+                    self._view._atualiza_tv(bt)
+                elif tit == '':
+                    mb.showerror('Busca', str(err))
+            except ExcTituloInvalido as err:
+                mb.showerror('Busca', str(err))
+            else:
+                bt = self._model.busca_por_periodo(datai,dataf)
+                self._view._atualiza_tv(bt)
+                mb.showinfo('Busca', 'Busca por periodo realizada com sucesso')
+        elif rb == '4':
+            try:        
+                if categor != '': 
+                    bt = self._model.busca_por_categoria(categor)
+                    self._view._atualiza_tv(bt)
+                elif tit == '':
+                    mb.showerror('Busca', str(err))
+            except ExcTituloInvalido as err:
+                mb.showerror('Busca', str(err))
+            else:
+                bt = self._model.busca_por_categoria(categor)
+                self._view._atualiza_tv(bt)
+                mb.showinfo('Busca', 'Busca por categoria realizada com sucesso')
+            
         else:
-            bt = self._model.busca_por_titulo(tit)
-            self._view._atualiza_tv(bt)
-            mb.showinfo('Busca', 'Busca realizada com sucesso')
-
+            mb.showerror('Nenhuma Opção de Busca selecionada',\
+              'Nenhuma Opção de Busca selecionada')
     
     def _limpar_selec(self):
-        self._view.self._inicializar_vars.self._titulo.set('')
-        self._view.self._inicializar_vars.self._canal.set('')
-        self._view.self._inicializar_vars.self._data_i.set('')
-        self._view.self._inicializar_vars.self._cata_f.set('')
+        self._view.self._inicializar_vars._titulo.set('')
+        self._view.self._inicializar_vars._canal.set('')
+        self._view.self._inicializar_vars._data_i.set('')
+        self._view.self._inicializar_vars._cata_f.set('')
         
         
     def seleciona_arquivo(self):
@@ -68,15 +109,17 @@ class BuscaController:
     
     def _add_arquivo(self):
         r = self.seleciona_arquivo()
-        self._model.conversor = self._model.df
+        self._model.conversor = self._model.df 
         p =  self._model.conversor
         self._view._r = str(len(self._model.df))
         self._view._atualiza_tv(p)
 
+    
+
 if __name__ == '__main__':
 
     root = tk.Tk()
-    root.title('Lista de Filmes')
+    root.title('Buscador Youtube')
 
     model = BaseDeDados('BR_youtube_trending_data_p1.csv')
     view = BuscaGUI(root)
