@@ -34,65 +34,45 @@ class BuscaController:
         tit, canal,  datai, dataf, categor , rb = self._view._add_dados()
         if rb == '1':
             try: 
-                if tit != '':       
+                if tit != '':
+                    p = ['']
+                    self._view._atualiza_tv(p)       
                     bt = self._model.busca_por_titulo(tit)
                     self._view._atualiza_tv(bt)
+                else:
+                    mb.showerror('Busca', 'Nenhum titulo inserido')
             except ExcTituloInvalido as err:
-                mb.showerror('Busca', str(err))
-            else:
-                bt = self._model.busca_por_titulo(tit)
-                self._view._atualiza_tv(bt)
-                mb.showinfo('Busca', 'Busca por titulo realizada com sucesso')
+                mb.showerror('Busca', 'Nenhum titulo inserido')
         elif rb == '2':
             try:        
                 if canal != '':
                     bt = self._model.busca_por_canal(canal)
                     self._view._atualiza_tv(bt)
-                elif tit == '':
-                    mb.showerror('Busca', str(err))
+                else:
+                    mb.showerror('Busca', 'Nenhum canal inserido')
             except ExcTituloInvalido as err:
-                mb.showerror('Busca', str(err))
-            else:
-                bt = self._model.busca_por_canal(canal)
-                self._view._atualiza_tv(bt)
-                mb.showinfo('Busca', 'Busca por canal realizada com sucesso')
+                mb.showerror('Busca', 'Nenhum canal inserido')
         elif rb == '3':
             try:        
                 if datai != '' and dataf != '': 
                     bt = self._model.busca_por_periodo(datai, dataf)
                     self._view._atualiza_tv(bt)
-                elif tit == '':
-                    mb.showerror('Busca', str(err))
+                else:
+                    mb.showerror('Busca', 'Nenhuma data inserida')
             except ExcTituloInvalido as err:
-                mb.showerror('Busca', str(err))
-            else:
-                bt = self._model.busca_por_periodo(datai,dataf)
-                self._view._atualiza_tv(bt)
-                mb.showinfo('Busca', 'Busca por periodo realizada com sucesso')
+                mb.showerror('Busca', 'Nenhuma data inserida')
         elif rb == '4':
             try:        
                 if categor != '': 
                     bt = self._model.busca_por_categoria(categor)
                     self._view._atualiza_tv(bt)
-                elif tit == '':
-                    mb.showerror('Busca', str(err))
+                else:
+                    mb.showerror('Busca', 'Nenhuma categoria  selecionada' )
             except ExcTituloInvalido as err:
-                mb.showerror('Busca', str(err))
-            else:
-                bt = self._model.busca_por_categoria(categor)
-                self._view._atualiza_tv(bt)
-                mb.showinfo('Busca', 'Busca por categoria realizada com sucesso')
-            
+                mb.showerror('Busca', 'Nenhuma categoria  selecionada' )
         else:
             mb.showerror('Nenhuma Opção de Busca selecionada',\
-              'Nenhuma Opção de Busca selecionada')
-    
-    def _limpar_selec(self):
-        self._view.self._inicializar_vars._titulo.set('')
-        self._view.self._inicializar_vars._canal.set('')
-        self._view.self._inicializar_vars._data_i.set('')
-        self._view.self._inicializar_vars._cata_f.set('')
-        
+              'Nenhuma Opção de Busca selecionada')    
         
     def seleciona_arquivo(self):
         self.tipos_arq = (
@@ -107,13 +87,14 @@ class BuscaController:
             return self.nome_arq
         
     def _add_arquivo(self):
-        r = self.seleciona_arquivo()
+        r = self.seleciona_arquivo() 
         p =  self._model.converter_video_lista(self._model.df)
-        self._view._r = str(len(self._model.df))
+        self._view._quant_v(len(self._model.df))
         self._view._atualiza_tv(p)
-    
 
-    
+    def _limpar_selec(self):
+        self._view._limpar_selec()
+        
 
 if __name__ == '__main__':
 
