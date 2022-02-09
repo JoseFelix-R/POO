@@ -121,7 +121,7 @@ class BaseDeDados:
             v = Video.inicializador(i)
             lista_v.append(v)
         return lista_v
-    
+        
 
     @staticmethod
     def converter_video_lista(dataframe):
