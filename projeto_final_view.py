@@ -1,227 +1,175 @@
-"""
-    ! Classe usada para o modelo do projeto final
-"""
+import tkinter as tk
+import tkinter.ttk as ttk
+import tkinter.messagebox as mb
+from tkinter.filedialog import askopenfilename
 
-import pandas as pd
+class BuscaGUI:
+    '''View do Projeto'''
+    def __init__(self, root):
+        
+        self.botoes= {}
+        self._tv = None
+        self._ltv = []
+        self._root = root
+        self._categoria = ['Comedy', 'Entertainment', 'Sports', 'Documentary', 'Education','Gaming','Musica']        
+        self._inicializar_vars()
+        self._inicializa_gui()
+   
+    def _inicializar_vars(self):
+        self._titulo = tk.StringVar()
+        self._canal = tk.StringVar()
+        self._data_i = tk.StringVar()
+        self._data_f = tk.StringVar()     
+        self._categ = tk.StringVar()
+        self.nome_arq = tk.StringVar()
+        self._esc = tk.StringVar()
+        self._quant = tk.StringVar()
+    
+    def _add_dados(self):
+        '''Add os dados de entrada do usuario'''
+        return(self._titulo.get(), self._canal.get(), self._data_i.get(), self._data_f.get(), self._categ.get(), self._esc.get())
+    
+    def _inicializa_gui(self):
+        #Tema TTK
+        ttk.Style().theme_use('vista')
 
-
-class Video:
-    '''
-    Representa um vídeo do Youtube.
-    '''
-
-    def __init__(self, idvideo='padrao', titulo='padrao', dt_publicacao='01/01/2022', idcanal='idpadrao', canal='padrao', datat='0/0/0', cont_views=0, likes=0, dislikes=0, cont_comentarios=0, descricao='padrao', categoria='ALL'):
-        self.idvideo = idvideo
-        self.titulo = titulo
-        self.datap = dt_publicacao
-        self.idcanal = idcanal
-        self.canal = canal
-        self.datat = datat
-        self.qvisu = cont_views
-        self.qlikes = likes
-        self.qdislikes = dislikes
-        self.qcom = cont_comentarios
-        self.desc = descricao
-        self.catin = categoria
-
-    @staticmethod
-    def inicializador(tupla):
-        '''Inicializa as informações do Video'''
-        v = Video()
-        v.idvideo = tupla[0]
-        v.titulo = tupla[1]
-        v.datap = tupla[2]
-        v.idcanal = tupla[3]
-        v.canal = tupla[4]
-        v.datat = tupla[5]
-        v.qvisu = tupla[6]
-        v.qlikes = tupla[7]
-        v.qdislikes = tupla[8]
-        v.qcom = tupla[9]
-        v.desc = tupla[10]
-        v.catin = tupla[11]
-        return v
-
-    @staticmethod
-    def inicializador_lista(tupla):
-        '''Inicializa as informações do Video'''
-        idvideo = tupla[0]
-        titulo = tupla[1]
-        datap = tupla[2]
-        idcanal = tupla[3]
-        canal = tupla[4]
-        datat = tupla[5]
-        qvisu = tupla[6]
-        qlikes = tupla[7]
-        qdislikes = tupla[8]
-        qcom = tupla[9]
-        desc = tupla[10]
-        catin = tupla[11]
-        v = [idvideo, titulo, datap, idcanal,canal,datat, qvisu,qlikes,qdislikes,qcom,desc,catin]
-        return v
-
-    def __str__(self):
-        '''Metodo usado para saida das Informações de um video do youtube'''
-        return f'{self.canal}\n - {self.titulo} - {self.catin} - Views: {str(self.qvisu)} - Comentarios: {self.qcom} - Likes: {self.qlikes} Publicado em: {self.datap}'
-
-
-class BaseDeDados:
-    '''
-    Representa uma Base de Dados,
-    responsável por realizar consultas
-    em um arquivo Pandas.Dataframe.
-    '''
-
-    def __init__(self, nome_arq=''):
-        '''
-        Inicializa uma base de dados
-        com o nome do arquivo (.csv)
-        '''
-        self.convert = ''
-        self._nome = nome_arq
-        # abre o dataframe e o atribui a um atributo de instância
-        self.df = pd.read_csv(str(self._nome), lineterminator='\n')
-
-        # VEJA SEÇÃO 2.3.3 altera tipo das colunas data
-        self.df.dt_publicacao = pd.to_datetime(self.df.dt_publicacao)
-        self.df.dt_trending = pd.to_datetime(self.df.dt_trending)
-
-        # SUBSTITUA df ABAIXO pelo atributo de instância
-        # correspondente ao dataframe
-        print(f'Arquivo: {nome_arq}')
-        print(f'Possui dados dos vídeos em tendência no Youtube BR')
-        print(f'Total de vídeos: {len(self.df)}')
-        print(
-            f'Período: {self.df.dt_publicacao.min()} até {self.df.dt_publicacao.max()}')
-        print(f'Dados dos vídeos:')
-        for c in self.df.columns.to_list():
-            print(c, end=', ')
-
-    def lista_categorias(self):
-        '''
-        Retorna lista contendo todas as categorias
-        presentes no dataframe.
-        '''
-
-        # SUBSTITUA df ABAIXO pelo atributo de instância
-        # correspondente ao dataframe
-        return list(self.df.categoria.unique())
-
-    @staticmethod
-    def conversor(dataframe):
-        res = [tup for tup in zip(dataframe.id_video, dataframe.titulo,
-                                  dataframe.dt_publicacao, dataframe.id_canal,
-                                  dataframe.canal, dataframe.dt_trending,
-                                  dataframe.cont_views, dataframe.likes,
-                                  dataframe.dislikes, dataframe.cont_comentarios,
-                                  dataframe.descricao, dataframe.categoria)]
-
-        lista_v = []
-        for i in res:
-            v = Video.inicializador(i)
-            lista_v.append(v)
-        return lista_v
-
-    @staticmethod
-    def converter_video_lista(dataframe):
-        res = [tup for tup in zip(dataframe.id_video, dataframe.titulo,
-                                  dataframe.dt_publicacao, dataframe.id_canal,
-                                  dataframe.canal, dataframe.dt_trending,
-                                  dataframe.cont_views, dataframe.likes,
-                                  dataframe.dislikes, dataframe.cont_comentarios,
-                                  dataframe.descricao, dataframe.categoria)]
-        lista_v_s = []
-        for i in res:
-            l = Video.inicializador_lista(i)
-            lista_v_s.append(l)
-        return lista_v_s
-         
+        #Frames Interface
+        frame_top = ttk.Frame(self._root)
+        frame_top.pack(expand=True, fill=tk.BOTH, side=tk.TOP)
+        frame_right = ttk.Frame(self._root)
+        frame_right.pack(expand=True, fill=tk.BOTH, side=tk.RIGHT) 
+        frame_down = ttk.Frame(self._root)
+        frame_down.pack(expand=True, fill=tk.BOTH, side=tk.BOTTOM) 
+        
+        #TreeView 
+        colunas = ['0','1','2','3','4','5','6','7','8','9','10','11']
+        self._tv = ttk.Treeview(frame_right, columns=colunas, show='headings')
+        self._tv.pack(expand=True, fill=tk.BOTH, side=tk.TOP)
+        
+        #heading
+        self._tv.heading('0', text='Id_video')
+        self._tv.heading('1', text='Titulo')
+        self._tv.heading('2', text='Publicacao')
+        self._tv.heading('3', text='Id_canal')
+        self._tv.heading('4', text='Canal')
+        self._tv.heading('5', text='Threding')
+        self._tv.heading('6', text='Visualizações')
+        self._tv.heading('7', text='Likes')
+        self._tv.heading('8', text='Dislikes')
+        self._tv.heading('9', text='Comentarios')
+        self._tv.heading('10', text='Descrução')
+        self._tv.heading('11', text='Categoria')
+        
+        
+        self._tv.column('0', width=90, minwidth=100)
+        self._tv.column('1', width=90, minwidth=100)
+        self._tv.column('2', width=90, minwidth=100)
+        self._tv.column('3', width=90, minwidth=100)
+        self._tv.column('4', width=90, minwidth=100)
+        self._tv.column('5', width=90, minwidth=100)
+        self._tv.column('6', width=90, minwidth=100)
+        self._tv.column('7', width=90, minwidth=100)
+        self._tv.column('8', width=90, minwidth=100)
+        self._tv.column('9', width=90, minwidth=100)
+        self._tv.column('10', width=90, minwidth=100)
+        self._tv.column('11', width=90, minwidth=100)
+        
+        #ScrollBar    
+        sb_y = ttk.Scrollbar(frame_right, orient=tk.VERTICAL, command=self._tv.yview)
+        self._tv.configure(yscroll=sb_y.set)
+        
+        sb_x = ttk.Scrollbar(frame_right, orient=tk.HORIZONTAL, command=self._tv.xview)
+        self._tv.configure(xscroll=sb_x.set)
+        
+        self._tv.grid(row=0, column=0)
+        sb_y.grid(row=0, column=1, sticky='ns')
+        sb_x.grid(row=1, column=0, sticky='we')
+        
+        
+        #Menu de Busca
+        v_titu = ttk.Label(frame_top, text='Titulo: ')
+        v_titu.grid(row = 0, column = 0)
+        e_titu = ttk.Entry(frame_top, width=40,textvariable=self._titulo)
+        e_titu.grid(row = 0, column = 1, columnspan=3, sticky='W')
+        rb_r = ttk.Radiobutton(frame_top, text='Titulo', value=1, variable=self._esc)
+        rb_r.grid(row = 0, column = 5, sticky='E')
+    
+        
+        v_canal = ttk.Label(frame_top, text='Canal: ')
+        v_canal.grid(row = 1, column = 0)
+        e_canal = ttk.Entry(frame_top, width=20, textvariable=self._canal)
+        e_canal.grid(row = 1, column = 1, sticky='W')
+        rb_r = ttk.Radiobutton(frame_top, text='Canal', value=2, variable=self._esc)
+        rb_r.grid(row = 1, column = 5, sticky='E')       
+        
+        v_data_i = ttk.Label(frame_top, text='Inicio: ')
+        v_data_i.grid(row = 2, column = 0)
+        e_data_i= ttk.Entry(frame_top, width=10, textvariable=self._data_i)
+        e_data_i.grid(row = 2, column = 1, sticky='W')
+        
+        v_data_f = ttk.Label(frame_top, text='Final: ')
+        v_data_f.grid(row = 2, column = 2)
+        e_data_f= ttk.Entry(frame_top, width=10, textvariable=self._data_f)
+        e_data_f.grid(row = 2, column = 3, sticky='E')
+        rb_r = ttk.Radiobutton(frame_top, text='Periodo', value=3, variable=self._esc)
+        rb_r.grid(row = 2, column = 5, sticky='E')
+        
+        #Combobox categoria
+        
+        v_cat = ttk.Label(frame_top, text='Categoria: ')
+        v_cat.grid(row = 3, column = 0, sticky='S')
+        v_cb = ttk.Combobox(frame_top, width = 20, textvariable=self._categ,
+                           state='readonly', values=self._categoria)
+        v_cb.grid(row = 3, column=1, sticky='W')
+        rb_r = ttk.Radiobutton(frame_top, text='Categoria', value=4, variable=self._esc)
+        rb_r.grid(row = 3, column = 5, sticky='E')
         
 
-    def busca_por_titulo(self, titulo):
-        print('Buscando por titulo')
-        t = titulo
-        dataframe_t = self.df[self.df.titulo.str.contains(t, case=False)]
-        self.convert = BaseDeDados.converter_video_lista(dataframe_t)
-        return self.convert
+        #Butões
+        self.botoes['Buscar'] = ttk.Button(frame_top,text='Buscar')
+        self.botoes['Buscar'].grid(row = 4, column = 3, sticky='E')
+        self.botoes['Limpar'] = ttk.Button(frame_top,text='Limpar')
+        self.botoes['Limpar'].grid(row = 4, column = 4, sticky='E')
+        
+        self.nome_arq.set('Arquivo escolhido: ')
+        self.botoes['A_Arquivo'] = ttk.Button(frame_top, text='Abrir Arquivo')
+        self.botoes['A_Arquivo'].grid(row = 4, column = 5, sticky='E')
+        
+        #Display quantidade de Videos
+        
+        v_quant = ttk.Label(frame_top,text='Videos encontrados: ')
+        v_quant.grid(row = 7, column=0, columnspan=3, sticky='S')
+        v_quant = ttk.Label(frame_top, text=self._quant)
+        v_quant.grid(row = 7, column=2, sticky='S')
+        
+    def _atualiza_tv(self, lista):
+        '''Modifica os valores da TreeVeiw'''
+        self.remove_all()
+        self._ltv = lista
+        for i in self._ltv:
+                self._tv.insert('', tk.END, values=i)
 
-    def busca_por_canal(self, nome_canal):
-        n_canal = nome_canal
-        dataframe_nc = self.df[self.df.canal.str.contains(n_canal, case=False)]
-        self.convert = BaseDeDados.converter_video_lista(dataframe_nc)
-        return self.convert
+    def _limpar_selec(self):
+        self._titulo.set('')
+        self._canal.set('')
+        self._data_i.set('')
+        self._data_f.set('')    
+        self._categ.set('')
 
-    def busca_por_categoria(self, categoria):
-        categ = {'29': 'Nonprofits & Activism',
-                 '1': 'Film & Animation',
-                 '2': 'Autos & Vehicles',
-                 '10': 'Music',
-                 '15': 'Pets & Animals',
-                 '17': 'Sports',
-                 '18': 'Short Movies',
-                 '19': 'Travel & Events',
-                 '20': 'Gaming',
-                 '21': 'Videoblogging',
-                 '22': 'People & Blogs',
-                 '23': 'Comedy',
-                 '24': 'Entertainment',
-                 '25': 'News & Politics',
-                 '26': 'Howto & Style',
-                 '27': 'Education',
-                 '28': 'Science & Technology',
-                 '30': 'Movies',
-                 '31': 'Anime/Animation',
-                 '32': 'Action/Adventure',
-                 '33': 'Classics',
-                 '34': 'Comedy',
-                 '35': 'Documentary',
-                 '36': 'Drama',
-                 '37': 'Family',
-                 '38': 'Foreign',
-                 '39': 'Horror',
-                 '40': 'Sci-Fi/Fantasy',
-                 '41': 'Thriller',
-                 '42': 'Shorts',
-                 '43': 'Shows',
-                 '44': 'Trailers'}
+    def _quant_v(self, n):
+        self._quant.set('n')
 
-        categoria = categoria.capitalize()
+    def remove_all(self):
+        for record in self._tv.get_children():
+            self._tv.delete(record)
 
-        for chave, valor in categ.items():
-            if valor == categoria:
-                r = chave
-
-        res = self.df[self.df.categoria == categ[r]]
-        self.convert = BaseDeDados.converter_video_lista(res)
-        return self.convert
-
-    def busca_por_periodo(self, inicio, fim):
-        self.df.dt_publicacao = pd.to_datetime(self.df.dt_publicacao)
-        self.df.dt_trending = pd.to_datetime(self.df.dt_trending)
-
-        masc = (self.df.dt_publicacao.dt.date >= pd.to_datetime(inicio)) & (
-            self.df.dt_publicacao.dt.date <= pd.to_datetime(fim))
-
-        res = self.df[masc]
-        self.convert = BaseDeDados.converter_video_lista(res)
-        return self.convert
-
-    def __str__(self):
-        r = self.convert
-        s = '\nSaida do Programa:\n'
-        for i in r:
-            s += f'{i}\n'
-        return s
-
+    
 
 if __name__ == '__main__':
-    ld = BaseDeDados('BR_youtube_trending_data_p1.csv')
-    
-    #print(ld.lista_categorias())
-    #res = ld.busca_por_titulo('Palmeiras')
-    #res = ld.busca_por_canal('Diana Demarchi')
-    #res = ld.busca_por_categoria('comedy') # também pode ser informado um nr. inteiro
-    #res = ld.busca_por_periodo('2020-11-01', '2020-11-30')
-    #print('\n\n\n')
-    #for v in res:
-    #   print(v)
+    root = tk.Tk()
+    root.title('Buscador Youtube')
+    gui = BuscaGUI(root)
+    gui._atualiza_tv([['um','dois', 'tres','quatro','cinco','seis','sete','oito','nove','dez','onze','doze'],
+    ['um','dois', 'tres','quatro','cinco','seis','sete','oito','nove','dez','onze','doze']])
+
+    root.mainloop()
