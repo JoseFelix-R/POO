@@ -10,6 +10,7 @@ class BuscaGUI:
         self.botoes= {}
         self._tv = None
         self._ltv = []
+        self._quant = '0'
         self._root = root
         self._categoria = ['Comedy', 'Entertainment', 'Sports', 'Documentary', 'Education','Gaming','Musica']        
         self._inicializar_vars()
@@ -23,7 +24,7 @@ class BuscaGUI:
         self._categ = tk.StringVar()
         self.nome_arq = tk.StringVar()
         self._esc = tk.StringVar()
-        self._quant = tk.StringVar()
+    
     
     def _add_dados(self):
         '''Add os dados de entrada do usuario'''
@@ -130,6 +131,8 @@ class BuscaGUI:
         self.botoes['Buscar'].grid(row = 4, column = 3, sticky='E')
         self.botoes['Limpar'] = ttk.Button(frame_top,text='Limpar')
         self.botoes['Limpar'].grid(row = 4, column = 4, sticky='E')
+        self.botoes['LimparB'] = ttk.Button(frame_top,text='Limpar Busca')
+        self.botoes['LimparB'].grid(row = 4, column = 7, sticky='E')
         
         self.nome_arq.set('Arquivo escolhido: ')
         self.botoes['A_Arquivo'] = ttk.Button(frame_top, text='Abrir Arquivo')
@@ -155,9 +158,7 @@ class BuscaGUI:
         self._data_i.set('')
         self._data_f.set('')    
         self._categ.set('')
-
-    def _quant_v(self, n):
-        self._quant.set('n')
+         
 
     def remove_all(self):
         for record in self._tv.get_children():
