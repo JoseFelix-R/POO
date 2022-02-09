@@ -29,6 +29,7 @@ class BuscaController:
         self._view.botoes['Buscar']['command'] = self._busca_video
         self._view.botoes['Limpar']['command'] = self._limpar_selec
         self._view.botoes['A_Arquivo']['command'] = self._add_arquivo
+        self._view.botoes['LimparB']['command'] = self._limpar_buscador
         
     def _busca_video(self):
         tit, canal,  datai, dataf, categor , rb = self._view._add_dados()
@@ -88,12 +89,17 @@ class BuscaController:
         
     def _add_arquivo(self):
         r = self.seleciona_arquivo() 
-        p =  self._model.converter_video_lista(self._model.df)
-        self._view._quant_v(len(self._model.df))
+        if len(self._model.df) > 20:
+            p =  self._model.converter_video_lista(self._model.df.head(100))
+        else:
+            p =  self._model.converter_video_lista(self._model.df)
         self._view._atualiza_tv(p)
 
     def _limpar_selec(self):
         self._view._limpar_selec()
+    
+    def _limpar_buscador(self):
+        self._view.remove_all()
         
 
 if __name__ == '__main__':
@@ -101,7 +107,7 @@ if __name__ == '__main__':
     root = tk.Tk()
     root.title('Buscador Youtube')
 
-    model = BaseDeDados('BR_youtube_trending_data_p1.csv')
+    model = BaseDeDados('BR_youtube_trending_data_completo.csv')
     view = BuscaGUI(root)
     controller = BuscaController(model, view)
 
