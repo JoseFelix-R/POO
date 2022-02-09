@@ -42,10 +42,27 @@ class Video:
         v.catin = tupla[11]
         return v
 
+    @staticmethod
+    def inicializador_lista(tupla):
+        '''Inicializa as informações do Video'''
+        idvideo = tupla[0]
+        titulo = tupla[1]
+        datap = tupla[2]
+        idcanal = tupla[3]
+        canal = tupla[4]
+        datat = tupla[5]
+        qvisu = tupla[6]
+        qlikes = tupla[7]
+        qdislikes = tupla[8]
+        qcom = tupla[9]
+        desc = tupla[10]
+        catin = tupla[11]
+        v = [idvideo, titulo, datap, idcanal,canal,datat, qvisu,qlikes,qdislikes,qcom,desc,catin]
+        return v
+
     def __str__(self):
         '''Metodo usado para saida das Informações de um video do youtube'''
-        s = '----------------------------------------'
-        return f'{self.canal}\n - {self.titulo}\n - {self.catin}\n - Views: {str(self.qvisu)}\n - Comentarios: {self.qcom}\n - Likes: {self.qlikes}\n Publicado em: {self.datap}\n {s}\n'
+        return f'{self.canal}\n - {self.titulo} - {self.catin} - Views: {str(self.qvisu)} - Comentarios: {self.qcom} - Likes: {self.qlikes} Publicado em: {self.datap}'
 
 
 class BaseDeDados:
@@ -61,9 +78,9 @@ class BaseDeDados:
         com o nome do arquivo (.csv)
         '''
         self.convert = ''
-
+        self._nome = nome_arq
         # abre o dataframe e o atribui a um atributo de instância
-        self.df = pd.read_csv(str(nome_arq), lineterminator='\n')
+        self.df = pd.read_csv(str(self._nome), lineterminator='\n')
 
         # VEJA SEÇÃO 2.3.3 altera tipo das colunas data
         self.df.dt_publicacao = pd.to_datetime(self.df.dt_publicacao)
@@ -103,21 +120,36 @@ class BaseDeDados:
         for i in res:
             v = Video.inicializador(i)
             lista_v.append(v)
-        for i in lista_v:
-            print(i)
         return lista_v
+    
+
+    @staticmethod
+    def converter_video_lista(dataframe):
+        res = [tup for tup in zip(dataframe.id_video, dataframe.titulo,
+                                  dataframe.dt_publicacao, dataframe.id_canal,
+                                  dataframe.canal, dataframe.dt_trending,
+                                  dataframe.cont_views, dataframe.likes,
+                                  dataframe.dislikes, dataframe.cont_comentarios,
+                                  dataframe.descricao, dataframe.categoria)]
+        lista_v_s = []
+        for i in res:
+            l = Video.inicializador_lista(i)
+            lista_v_s.append(l)
+        return lista_v_s
+         
+        
 
     def busca_por_titulo(self, titulo):
         print('Buscando por titulo')
         t = titulo
         dataframe_t = self.df[self.df.titulo.str.contains(t, case=False)]
-        self.convert = BaseDeDados.conversor(dataframe_t)
+        self.convert = BaseDeDados.converter_video_lista(dataframe_t)
         return self.convert
 
     def busca_por_canal(self, nome_canal):
         n_canal = nome_canal
         dataframe_nc = self.df[self.df.canal.str.contains(n_canal, case=False)]
-        self.convert = BaseDeDados.conversor(dataframe_nc)
+        self.convert = BaseDeDados.converter_video_lista(dataframe_nc)
         return self.convert
 
     def busca_por_categoria(self, categoria):
@@ -161,7 +193,7 @@ class BaseDeDados:
                 r = chave
 
         res = self.df[self.df.categoria == categ[r]]
-        self.convert = BaseDeDados.conversor(res)
+        self.convert = BaseDeDados.converter_video_lista(res)
         return self.convert
 
     def busca_por_periodo(self, inicio, fim):
@@ -172,7 +204,7 @@ class BaseDeDados:
             self.df.dt_publicacao.dt.date <= pd.to_datetime(fim))
 
         res = self.df[masc]
-        self.convert = BaseDeDados.conversor(res)
+        self.convert = BaseDeDados.converter_video_lista(res)
         return self.convert
 
     def __str__(self):
@@ -186,12 +218,11 @@ class BaseDeDados:
 if __name__ == '__main__':
     ld = BaseDeDados('BR_youtube_trending_data_p1.csv')
     
-    print(ld.lista_categorias())
+    #print(ld.lista_categorias())
     #res = ld.busca_por_titulo('Palmeiras')
     #res = ld.busca_por_canal('Diana Demarchi')
-    res = ld.busca_por_categoria('comedy') # também pode ser informado um nr. inteiro
+    #res = ld.busca_por_categoria('comedy') # também pode ser informado um nr. inteiro
     #res = ld.busca_por_periodo('2020-11-01', '2020-11-30')
-
-    print('\n\n\n')
-    for v in res:
-        print(v)
+    #print('\n\n\n')
+    #for v in res:
+    #   print(v)
